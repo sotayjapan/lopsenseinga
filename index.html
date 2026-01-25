@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LỚP SENSEI NGA - MVP VIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #bc002d;
+            --gold: #d4af37;
+            --glass: rgba(255, 255, 255, 0.15);
+            --text: #ffffff;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+            display: flex; justify-content: center; align-items: flex-start;
+        }
+
+        /* --- 1. NỀN NÚI PHÚ SĨ & MÂY BAY --- */
+        .fuji-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1570116432282-e03623d77694?q=80&w=2070') no-repeat center center;
+            background-size: cover;
+            z-index: -3;
+        }
+
+        .clouds-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/clouds.png');
+            opacity: 0.5;
+            z-index: -2;
+            animation: moveClouds 120s linear infinite;
+        }
+
+        @keyframes moveClouds {
+            from { background-position: 0 0; }
+            to { background-position: 10000px 0; }
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: -1;
+        }
+
+        /* --- 2. GIAO DIỆN GLASSMORPHISM --- */
+        .container {
+            width: 95%; max-width: 450px;
+            margin-top: 50px;
+            z-index: 10;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 20px;
+            color: var(--text);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .logo-mvp {
+            width: 70px; height: 70px; background: var(--primary);
+            border-radius: 50%; margin: 0 auto 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; border: 2px solid white;
+        }
+
+        /* --- 3. INPUTS & BUTTONS --- */
+        input {
+            width: 100%; padding: 12px; margin: 10px 0;
+            border-radius: 12px; border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.2); color: white;
+            box-sizing: border-box; outline: none;
+        }
+        input::placeholder { color: rgba(255,255,255,0.7); }
+
+        .btn-main {
+            width: 100%; padding: 15px; margin-top: 15px;
+            border-radius: 15px; border: none;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white; font-weight: bold; cursor: pointer;
+            transition: 0.3s; font-size: 16px;
+        }
+        .btn-main:hover { transform: scale(1.03); }
+
+        /* --- 4. LEADERBOARD & STATS --- */
+        .coin-status {
+            background: linear-gradient(135deg, #ffd700, #f39c12);
+            color: #000; padding: 10px; border-radius: 15px;
+            font-weight: bold; margin-bottom: 15px;
+        }
+
+        .leaderboard-item {
+            display: flex; align-items: center; padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: left;
+        }
+
+        .quiz-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        }
+        .btn-quiz {
+            background: rgba(52, 152, 219, 0.7); border: none;
+            color: white; padding: 15px; border-radius: 12px;
+            font-weight: bold; cursor: pointer;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="fuji-bg"></div>
+    <div class="clouds-layer"></div>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="card">
+            <div class="logo-mvp">MVP</div>
+            <h2 style="margin:0; letter-spacing: 2px;">LỚP SENSEI NGA</h2>
+        </div>
+
+        <div id="login-section" class="card">
+            <h3>ĐĂNG NHẬP</h3>
+            <input type="email" id="email" placeholder="Email học sinh">
+            <input type="password" id="password" placeholder="Mật khẩu">
+            <button class="btn-main" onclick="handleLogin()">VÀO LỚP</button>
+        </div>
+
+        <div id="main-section" class="hidden">
+            <div class="coin-status">
+                🪙 XU MANTEN: <span id="mantenCoins">0</span>
+            </div>
+            
+            <div class="card">
+                <p style="margin:0;">Điểm Man Tích Lũy</p>
+                <h1 style="font-size: 50px; margin: 10px 0;" id="totalPoints">0</h1>
+                <hr style="opacity:0.2">
+                <h4>KIỂM TRA (CHỈ MANTEN MỚI CÓ ĐIỂM)</h4>
+                <div class="quiz-grid">
+                    <button class="btn-quiz" onclick="loadQuiz('Từ Vựng')">Từ Vựng</button>
+                    <button class="btn-quiz" onclick="loadQuiz('Kanji')">Kanji</button>
+                    <button class="btn-quiz" onclick="loadQuiz('Ngữ Pháp')">Ngữ Pháp</button>
+                    <button class="btn-quiz" onclick="loadQuiz('Chuyên Ngành')">Chuyên Ngành</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-crown" style="color:gold"></i> BẢNG VÀNG MANTEN</h3>
+                <div id="leaderboard-list"></div>
+            </div>
+            
+            <button onclick="location.reload()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px; border-radius:10px; width:100%;">Đăng xuất</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // --- 1. CONFIG CỦA NAM ---
+        const firebaseConfig = { 
+            apiKey: "AIzaSy...", 
+            authDomain: "dudoan-mvp.firebaseapp.com",
+            projectId: "dudoan-mvp",
+            storageBucket: "dudoan-mvp.appspot.com",
+            messagingSenderId: "...",
+            appId: "..."
+        };
+        const TELE_TOKEN = "TOKEN_CỦA_NAM";
+        const CHAT_ID = "ID_CỦA_SENSEI";
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // --- 2. XỬ LÝ ĐĂNG NHẬP ---
+        async function handleLogin() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            try {
+                const res = await auth.signInWithEmailAndPassword(e, p);
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('main-section').classList.remove('hidden');
+                loadUserData(res.user.uid);
+                loadLeaderboard();
+            } catch (err) { alert("Sai thông tin rồi Nam ơi!"); }
+        }
+
+        function loadUserData(uid) {
+            db.collection("users").doc(uid).onSnapshot(doc => {
+                const data = doc.data();
+                document.getElementById('totalPoints').innerText = data.totalPoints;
+                document.getElementById('mantenCoins').innerText = data.mantenCoins || 0;
+            });
+        }
+
+        // --- 3. BẢNG XẾP HẠNG REAL-TIME ---
+        function loadLeaderboard() {
+            db.collection("users").where("role", "==", "student").orderBy("mantenCoins", "desc").limit(5).onSnapshot(snap => {
+                let html = '';
+                let i = 1;
+                snap.forEach(doc => {
+                    const s = doc.data();
+                    html += `<div class="leaderboard-item">
+                        <b style="width:30px; color:gold">${i === 1 ? '🥇' : i}</b>
+                        <div style="flex:1"><b>${s.name}</b><br><small>${s.mantenCoins || 0} lần Manten 🪙</small></div>
+                        <div style="font-weight:bold">${s.totalPoints}đ</div>
+                    </div>`;
+                    i++;
+                });
+                document.getElementById('leaderboard-list').innerHTML = html;
+            });
+        }
+
+        // --- 4. THÔNG BÁO TELEGRAM ---
+        async function notifyTele(msg) {
+            const url = `https://api.telegram.org/bot${TELE_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=HTML`;
+            fetch(url);
+        }
+
+        // Giả lập hàm kết thúc bài kiểm tra
+        async function winManten(subject) {
+            const user = auth.currentUser;
+            // Logic cộng 1 Xu và cộng Điểm Man
+            await db.collection("users").doc(user.uid).update({
+                totalPoints: firebase.firestore.FieldValue.increment(10),
+                mantenCoins: firebase.firestore.FieldValue.increment(1)
+            });
+            notifyTele(`👑 <b>MANTEN!</b>\nHọc sinh vừa đạt điểm tuyệt đối môn ${subject}!\nThưởng: +10đ & +1 XU 🪙`);
+            alert("MANTEN! Bạn được tặng 1 Xu và 10đ Man.");
+        }
+
+        function loadQuiz(s) {
+            alert("Bắt đầu thi môn " + s + ". Nhớ là phải đạt 100% mới có điểm nhé!");
+            // Gọi hàm winManten(s) khi học sinh làm đúng hết câu hỏi
+        }
+    </script>
+</body>
+</html>
