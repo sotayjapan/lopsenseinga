@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LỚP SENSEI NGA - MVP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Toàn bộ nền */
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            /* Hình nền núi Phú Sĩ */
+            background: url('https://images.unsplash.com/photo-1570116432282-e03623d77694?q=80&w=2070') no-repeat center center;
+            background-size: cover;
+        }
+
+        /* Lớp mây bay lướt nhẹ nhàng */
+        .clouds-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/clouds.png');
+            opacity: 0.4;
+            z-index: 1;
+            animation: moveClouds 120s linear infinite;
+        }
+
+        @keyframes moveClouds {
+            from { background-position: 0 0; }
+            to { background-position: 10000px 0; }
+        }
+
+        /* Khung đăng nhập Glassmorphism (Kính mờ) */
+        .login-card {
+            position: relative;
+            z-index: 10; /* Nằm trên lớp mây */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 40px 30px;
+            width: 85%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            color: white;
+        }
+
+        /* Logo và Tiêu đề */
+        .logo-mvp {
+            width: 80px; height: 80px;
+            background: #bc002d;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 22px;
+            border: 2px solid white;
+            box-shadow: 0 0 15px rgba(188, 0, 45, 0.5);
+        }
+
+        .class-name { font-size: 16px; letter-spacing: 3px; margin-bottom: 25px; text-transform: uppercase; }
+        .login-title { font-size: 24px; font-weight: bold; margin-bottom: 30px; }
+
+        /* Input và Button */
+        input {
+            width: 100%; padding: 15px; margin: 12px 0;
+            border-radius: 15px; border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white; font-size: 16px;
+            box-sizing: border-box; outline: none;
+        }
+
+        input::placeholder { color: rgba(255,255,255,0.6); }
+
+        .btn-login {
+            width: 100%; padding: 15px; margin-top: 25px;
+            border-radius: 20px; border: none;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white; font-size: 18px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 5px 20px rgba(255, 75, 43, 0.4);
+            transition: 0.3s;
+        }
+
+        .btn-login:hover { transform: scale(1.03); filter: brightness(1.1); }
+    </style>
+</head>
+<body>
+
+    <div class="clouds-layer"></div>
+
+    <div class="login-card">
+        <div class="logo-mvp">MVP</div>
+        <div class="class-name">Lớp Sensei Nga</div>
+        <div class="login-title">ĐĂNG NHẬP HỆ THỐNG</div>
+        
+        <input type="email" placeholder="Email (abc@gmail.com)">
+        <input type="password" placeholder="Mật khẩu">
+        
+        <button class="btn-login">VÀO LỚP</button>
+    </div>
+
+</body>
+</html>
