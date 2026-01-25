@@ -3,234 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LỚP SENSEI NGA - VIP SYSTEM</title>
+    <title>LỚP SENSEI NGA - MVP</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #bc002d; --gold: #d4af37; --bg: #f4f7f6; --card: #ffffff; --text: #2c3e50; }
-        body.dark-mode { --bg: #1a1a1a; --card: #2d2d2d; --text: #e0e0e0; }
-        body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; margin: 0; padding-bottom: 50px; }
-        
-        .header { background: var(--card); padding: 20px; text-align: center; border-bottom: 5px solid var(--primary); position: relative; }
-        .container { width: 95%; max-width: 500px; margin: auto; }
-        .card { background: var(--card); border-radius: 15px; padding: 20px; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
-        /* Quiz Styles */
-        .quiz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn-quiz { background: #3498db; color: white; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .option-btn { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; background: var(--card); color: var(--text); cursor: pointer; text-align: left; }
-        
-        /* Stats Styles */
-        .score-big { font-size: 45px; color: var(--primary); font-weight: bold; text-align: center; }
-        .coin-box { background: linear-gradient(135deg, #ffd700, #f1c40f); color: #000; padding: 15px; border-radius: 15px; text-align: center; font-weight: bold; margin-bottom: 10px; }
-        
-        /* Leaderboard */
-        .leaderboard-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
-        .rank-gold { color: #ffd700; font-weight: bold; }
-        
-        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
-        .btn-main { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
-        .hidden { display: none; }
-        .dark-mode-toggle { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 20px; }
+        /* Toàn bộ nền và hiệu ứng */
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Hình nền núi Phú Sĩ cố định */
+        .fuji-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1570116432282-e03623d77694?q=80&w=2070') no-repeat center center;
+            background-size: cover;
+            z-index: -2;
+        }
+
+        /* Lớp phủ mờ giúp nhìn chữ rõ hơn */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            z-index: -1;
+        }
+
+        /* Hiệu ứng mây lướt qua nhẹ nhàng */
+        .clouds {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/clouds.png');
+            opacity: 0.6;
+            z-index: -1;
+            animation: moveClouds 100s linear infinite;
+        }
+
+        @keyframes moveClouds {
+            from { background-position: 0 0; }
+            to { background-position: 10000px 0; }
+        }
+
+        /* Khung đăng nhập Glassmorphism (Kính mờ) */
+        .login-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 40px 30px;
+            width: 85%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .logo-mvp {
+            width: 70px; height: 70px;
+            background: #bc002d;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 20px;
+            border: 2px solid white;
+        }
+
+        .title { font-size: 18px; letter-spacing: 2px; margin-bottom: 30px; }
+        .login-text { font-size: 24px; font-weight: bold; margin-bottom: 25px; }
+
+        input {
+            width: 100%; padding: 15px; margin: 10px 0;
+            border-radius: 15px; border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white; font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input::placeholder { color: rgba(255,255,255,0.7); }
+
+        .btn-login {
+            width: 100%; padding: 15px; margin-top: 20px;
+            border-radius: 20px; border: none;
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white; font-size: 18px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+            transition: 0.3s;
+        }
+
+        .btn-login:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
 
-<header class="header">
-    <div class="dark-mode-toggle" onclick="toggleDarkMode()"><i class="fas fa-adjust"></i></div>
-    <div style="font-size: 30px; font-weight: 900; color: var(--primary);">MVP</div>
-    <h1 style="margin:0; font-size: 24px;">LỚP SENSEI NGA</h1>
-</header>
+    <div class="fuji-bg"></div>
+    <div class="overlay"></div>
+    <div class="clouds"></div>
 
-<div class="container">
-    <div id="login-section" class="card">
-        <h3 style="text-align:center">ĐĂNG NHẬP HỆ THỐNG</h3>
-        <input type="email" id="email" placeholder="Email (abc@gmail.com)">
-        <input type="password" id="password" placeholder="Mật khẩu">
-        <button class="btn-main" onclick="handleLogin()">VÀO LỚP</button>
-    </div>
-
-    <div id="main-section" class="hidden">
+    <div class="login-card">
+        <div class="logo-mvp">MVP</div>
+        <div class="title">LỚP SENSEI NGA</div>
+        <div class="login-text">ĐĂNG NHẬP HỆ THỐNG</div>
         
-        <div id="student-view" class="hidden">
-            <div class="coin-box">
-                <i class="fas fa-coins"></i> KHO XU MANTEN: <span id="mantenCoins">0</span> XU
-            </div>
-            <div class="card">
-                <p style="text-align:center; margin:0;">Điểm Man Tích Lũy</p>
-                <div class="score-big" id="totalPoints">0</div>
-                <hr>
-                <div class="quiz-grid">
-                    <button class="btn-quiz" onclick="loadQuiz('Từ Vựng')">Từ Vựng</button>
-                    <button class="btn-quiz" onclick="loadQuiz('Kanji')">Kanji</button>
-                    <button class="btn-quiz" onclick="loadQuiz('Ngữ Pháp')">Ngữ Pháp</button>
-                    <button class="btn-quiz" onclick="loadQuiz('Chuyên Ngành')">Chuyên Ngành</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="quiz-section" class="card hidden">
-            <h3 id="quiz-title">Môn học</h3>
-            <div id="question-area">
-                <p id="question-text" style="font-weight:bold; font-size:18px;"></p>
-                <div id="options-area"></div>
-            </div>
-            <button onclick="closeQuiz()" style="background:#95a5a6; margin-top:10px;">Thoát</button>
-        </div>
-
-        <div class="card">
-            <h3><i class="fas fa-crown"></i> CHIẾN THẦN MANTEN</h3>
-            <div id="leaderboard-list"></div>
-        </div>
-
-        <div id="admin-view" class="hidden">
-            <div class="card" style="border-top: 5px solid var(--gold);">
-                <h3>DUYỆT YÊU CẦU & ĐIỂM</h3>
-                <div id="admin-control-list"></div>
-            </div>
-        </div>
-
-        <button onclick="location.reload()" style="background:#7f8c8d; margin-top:20px;">ĐĂNG XUẤT</button>
+        <input type="email" placeholder="Email (abc@gmail.com)">
+        <input type="password" placeholder="Mật khẩu">
+        
+        <button class="btn-login">VÀO LỚP</button>
     </div>
-</div>
 
-<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
-
-<script>
-    // --- 1. CONFIG (NAM THAY Ở ĐÂY) ---
-    const firebaseConfig = { apiKey: "...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..." };
-    const TELE_TOKEN = "TOKEN_BOT";
-    const CHAT_ID = "CHAT_ID";
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    let currentQuestions = [];
-    let currentStep = 0;
-    let score = 0;
-    let currentSubject = "";
-
-    // --- 2. LOGIC ĐĂNG NHẬP ---
-    async function handleLogin() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        try {
-            const res = await auth.signInWithEmailAndPassword(e, p);
-            initApp(res.user.uid);
-        } catch (err) { alert("Lỗi đăng nhập lớp Sensei Nga!"); }
-    }
-
-    async function initApp(uid) {
-        const userDoc = await db.collection("users").doc(uid).get();
-        const data = userDoc.data();
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('main-section').classList.remove('hidden');
-
-        if (data.role === 'teacher') {
-            document.getElementById('admin-view').classList.remove('hidden');
-            loadAdminData();
-        } else {
-            document.getElementById('student-view').classList.remove('hidden');
-            // Listen điểm real-time
-            db.collection("users").doc(uid).onSnapshot(doc => {
-                document.getElementById('totalPoints').innerText = doc.data().totalPoints;
-                document.getElementById('mantenCoins').innerText = doc.data().mantenCoins || 0;
-            });
-        }
-        loadLeaderboard();
-    }
-
-    // --- 3. HỆ THỐNG QUIZ (MANTEN HOẶC KHÔNG) ---
-    const quizData = {
-        "Từ Vựng": [
-            { q: "樹脂 là gì?", a: ["Nhựa", "Sắt", "Gỗ", "Đá"], c: 0 },
-            { q: "安全 là gì?", a: ["Nguy hiểm", "An toàn", "Vất vả", "Nhanh"], c: 1 }
-        ],
-        // Thêm data Kanji, Ngữ Pháp, Chuyên Ngành tương tự...
-    };
-
-    function loadQuiz(subject) {
-        currentSubject = subject;
-        currentQuestions = quizData[subject] || quizData["Từ Vựng"];
-        currentStep = 0; score = 0;
-        document.getElementById('student-view').classList.add('hidden');
-        document.getElementById('quiz-section').classList.remove('hidden');
-        showQuestion();
-    }
-
-    function showQuestion() {
-        const q = currentQuestions[currentStep];
-        document.getElementById('quiz-title').innerText = currentSubject;
-        document.getElementById('question-text').innerText = q.q;
-        let html = '';
-        q.a.forEach((opt, i) => {
-            html += `<button class="option-btn" onclick="checkAnswer(${i})">${opt}</button>`;
-        });
-        document.getElementById('options-area').innerHTML = html;
-    }
-
-    function checkAnswer(idx) {
-        if (idx === currentQuestions[currentStep].c) score++;
-        currentStep++;
-        if (currentStep < currentQuestions.length) showQuestion();
-        else finishQuiz();
-    }
-
-    async function finishQuiz() {
-        const total = currentQuestions.length;
-        if (score === total) {
-            const uid = auth.currentUser.uid;
-            const userDoc = await db.collection("users").doc(uid).get();
-            const name = userDoc.data().name;
-
-            await db.collection("users").doc(uid).update({
-                totalPoints: firebase.firestore.FieldValue.increment(10), // Thưởng 10đ
-                mantenCoins: firebase.firestore.FieldValue.increment(1)  // Thưởng 1 Xu
-            });
-
-            sendTele(`👑 <b>MANTEN!</b>\nHọc sinh: <b>${name}</b>\nMôn: ${currentSubject}\nThưởng: +10đ & +1 XU 🪙`);
-            alert("MANTEN TUYỆT ĐỐI! Bạn nhận được 1 Xu Manten và 10đ Man!");
-        } else {
-            alert(`Kết quả: ${score}/${total}. Chỉ có Manten mới được thưởng! Hãy thử lại.`);
-        }
-        closeQuiz();
-    }
-
-    function closeQuiz() {
-        document.getElementById('quiz-section').classList.add('hidden');
-        document.getElementById('student-view').classList.remove('hidden');
-    }
-
-    // --- 4. BẢNG XẾP HẠNG ---
-    function loadLeaderboard() {
-        db.collection("users").where("role", "==", "student").orderBy("mantenCoins", "desc").limit(5).onSnapshot(snap => {
-            let html = '';
-            let i = 1;
-            snap.forEach(doc => {
-                const s = doc.data();
-                html += `<div class="leaderboard-item">
-                    <b style="width:30px">${i === 1 ? '🥇' : i}</b>
-                    <div style="flex:1"><b>${s.name}</b><br><small>${s.mantenCoins || 0} lần Manten 🪙</small></div>
-                    <div style="color:var(--primary)">${s.totalPoints}đ</div>
-                </div>`;
-                i++;
-            });
-            document.getElementById('leaderboard-list').innerHTML = html;
-        });
-    }
-
-    // --- 5. TELEGRAM & DARKMODE ---
-    async function sendTele(msg) {
-        const url = `https://api.telegram.org/bot${TELE_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=HTML`;
-        fetch(url);
-    }
-
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-    }
-</script>
 </body>
 </html>
