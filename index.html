@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Mail Vĩnh Viễn PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        .online-pulse { animation: pulse-green 2s infinite; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .mail-body img { max-width: 100%; height: auto; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen font-sans">
+
+<div class="max-w-6xl mx-auto p-4 md:p-8">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-blue-500 tracking-tighter">PRO MAIL SYSTEM</h1>
+            <p class="text-slate-500 text-sm">Hệ thống mail domain riêng - Vĩnh viễn</p>
+        </div>
+        
+        <div class="flex items-center gap-3 px-4 py-2 bg-slate-800 rounded-full border border-slate-700">
+            <div id="statusDot" class="w-3 h-3 rounded-full bg-gray-500"></div>
+            <span id="statusText" class="text-xs font-bold uppercase text-gray-400">Đang kiểm tra...</span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
+                <button onclick="createNewAccount()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all transform active:scale-95 shadow-lg shadow-blue-900/20">
+                    TẠO MAIL NGẪU NHIÊN
+                </button>
+
+                <div class="mt-6 space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">Địa chỉ Email</label>
+                        <div class="flex gap-2 mt-1">
+                            <input id="currentEmail" readonly placeholder="Chưa có mail..." class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-sm text-blue-400 focus:outline-none">
+                            <button onclick="copy('currentEmail')" class="bg-slate-700 hover:bg-slate-600 px-4 rounded-lg text-xs">Copy</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">Mật khẩu bảo mật</label>
+                        <input id="currentPass" readonly placeholder="..." class="w-full mt-1 bg-slate-900 border border-slate-700 p-3 rounded-lg text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
+                <h3 class="text-sm font-bold mb-4 text-slate-400 uppercase">Đăng nhập tài khoản cũ</h3>
+                <input id="loginUser" placeholder="Email..." class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg mb-2 text-sm">
+                <input id="loginPass" type="password" placeholder="Mật khẩu..." class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg mb-4 text-sm">
+                <button onclick="login()" class="w-full bg-slate-700 hover:bg-slate-600 py-3 rounded-lg text-sm font-bold transition">ĐĂNG NHẬP</button>
+            </div>
+        </div>
+
+        <div class="lg:col-span-3 bg-slate-800 rounded-2xl border border-slate-700 flex flex-col h-[600px] overflow-hidden">
+            <div class="p-4 border-b border-slate-700 bg-slate-800/50 flex justify-between items-center">
+                <span class="font-bold text-sm uppercase tracking-widest text-slate-400">Hộp thư</span>
+                <span id="mailCount" class="bg-blue-600 text-[10px] px-2 py-0.5 rounded-full">0</span>
+            </div>
+            <div id="msgList" class="flex-1 overflow-y-auto p-3 space-y-2 bg-slate-900/30">
+                <div class="text-center py-10 text-slate-600 text-sm">Chưa có thư mới...</div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-5 bg-slate-800 rounded-2xl border border-slate-700 h-[600px] flex flex-col overflow-hidden shadow-2xl">
+            <div class="p-4 border-b border-slate-700 bg-slate-800/50 font-bold text-sm uppercase text-slate-400">Nội dung chi tiết</div>
+            <div id="msgContent" class="flex-1 overflow-y-auto p-6 bg-slate-900/20">
+                <div class="flex flex-col items-center justify-center h-full text-slate-600">
+                    <svg class="w-16 h-16 mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <p>Chọn một thư để xem nội dung</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<audio id="tingAudio" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+<script>
+    const API = "https://api.mail.tm";
+    let token = "";
+    let lastMsgId = "";
+
+    // 1. KIỂM TRA TRẠNG THÁI HỆ THỐNG (CHẤM XANH ĐỎ)
+    async function checkStatus() {
+        const dot = document.getElementById('statusDot');
+        const text = document.getElementById('statusText');
+        try {
+            const res = await fetch(API);
+            if (res.ok || res.status === 404) {
+                dot.className = "w-3 h-3 rounded-full bg-green-500 online-pulse";
+                text.innerText = "Hệ thống: ONLINE";
+                text.className = "text-xs font-bold text-green-500";
+            } else throw new Error();
+        } catch {
+            dot.className = "w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_red]";
+            text.innerText = "Hệ thống: OFFLINE";
+            text.className = "text-xs font-bold text-red-500";
+        }
+    }
+
+    // 2. TẠO TÀI KHOẢN MỚI
+    async function createNewAccount() {
+        const domains = await fetch(`${API}/domains`).then(r => r.json());
+        const domain = domains["hydra:member"][0].domain;
+        const user = `user${Math.floor(Math.random()*999999)}@${domain}`;
+        const pass = "Pass123456@";
+
+        const res = await fetch(`${API}/accounts`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({address: user, password: pass})
+        });
+
+        if(res.ok) {
+            document.getElementById('currentEmail').value = user;
+            document.getElementById('currentPass').value = pass;
+            login(user, pass);
+        }
+    }
+
+    // 3. ĐĂNG NHẬP
+    async function login(u, p) {
+        const user = u || document.getElementById('loginUser').value;
+        const pass = p || document.getElementById('loginPass').value;
+        if(!user || !pass) return alert("Nhập đủ thông tin!");
+
+        const res = await fetch(`${API}/token`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({address: user, password: pass})
+        });
+
+        const data = await res.json();
+        if(data.token) {
+            token = data.token;
+            alert("Đã kết nối hòm thư!");
+            fetchMessages();
+        } else alert("Lỗi đăng nhập!");
+    }
+
+    // 4. LẤY THƯ & THÔNG BÁO TING TING
+    async function fetchMessages() {
+        if(!token) return;
+        const res = await fetch(`${API}/messages`, {
+            headers: {'Authorization': `Bearer ${token}`}
+        });
+        const data = await res.json();
+        const list = data["hydra:member"];
+        
+        document.getElementById('mailCount').innerText = list.length;
+
+        if (list.length > 0 && list[0].id !== lastMsgId) {
+            if(lastMsgId !== "") document.getElementById('tingAudio').play(); // Kêu Ting Ting
+            lastMsgId = list[0].id;
+        }
+
+        const html = list.map(m => `
+            <div onclick="readMail('${m.id}')" class="p-3 rounded-xl bg-slate-800 border border-slate-700 cursor-pointer hover:border-blue-500 transition-all hover:bg-slate-700">
+                <div class="text-[10px] text-blue-400 font-bold uppercase mb-1 truncate">${m.from.address}</div>
+                <div class="text-sm font-bold truncate text-slate-100">${m.subject || '(Không có tiêu đề)'}</div>
+                <div class="text-[10px] text-slate-500 mt-1">${new Date(m.createdAt).toLocaleString()}</div>
+            </div>
+        `).join('');
+        document.getElementById('msgList').innerHTML = html || '<div class="text-center py-10 text-slate-600 text-sm">Đang chờ mail mới...</div>';
+    }
+
+    // 5. ĐỌC NỘI DUNG CHI TIẾT
+    async function readMail(id) {
+        document.getElementById('msgContent').innerHTML = '<div class="text-center py-20">Đang tải...</div>';
+        const res = await fetch(`${API}/messages/${id}`, {
+            headers: {'Authorization': `Bearer ${token}`}
+        });
+        const data = await res.json();
+        document.getElementById('msgContent').innerHTML = `
+            <div class="mb-6 border-b border-slate-700 pb-4">
+                <h2 class="text-xl font-black text-white mb-2">${data.subject || '(Không tiêu đề)'}</h2>
+                <div class="text-xs text-slate-400">Từ: <span class="text-blue-400 font-bold">${data.from.address}</span></div>
+            </div>
+            <div class="mail-body bg-white text-slate-900 p-4 rounded-xl overflow-hidden">
+                ${data.html ? data.html[0] : `<div class="p-4">${data.intro}</div>`}
+            </div>
+        `;
+    }
+
+    function copy(id) {
+        const val = document.getElementById(id).value;
+        if(!val) return;
+        navigator.clipboard.writeText(val);
+        alert("Đã copy!");
+    }
+
+    // Khởi chạy
+    checkStatus();
+    setInterval(checkStatus, 15000);
+    setInterval(fetchMessages, 5000); // Tự động làm mới mỗi 5s
+</script>
+</body>
+</html>
